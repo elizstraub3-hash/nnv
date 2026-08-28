@@ -1,7 +1,8 @@
-# Fitines — Site da marca de roupas fitness
+# NNV by Neneve — Site da marca de active wear
 
-Landing page moderna e responsiva para a marca de moda fitness **Fitines**.
-Feita com HTML, CSS e JavaScript puro — sem dependências ou build.
+Landing page moderna e responsiva para a marca de active wear **NNV by Neneve**.
+Paleta branco / preto / vermelho. Feita com HTML, CSS e JavaScript puro — sem
+dependências ou build.
 
 ## Estrutura
 

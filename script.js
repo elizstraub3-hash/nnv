@@ -144,7 +144,7 @@ function initNewsletter() {
       return;
     }
     msg.style.color = "var(--brand)";
-    msg.textContent = "🎉 Cupom FITINES10 a caminho do seu e-mail!";
+    msg.textContent = "🎉 Cupom NNV10 a caminho do seu e-mail!";
     form.reset();
   });
 }
