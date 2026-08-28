@@ -1,52 +1,42 @@
 // ===== Dados =====
+const WHATSAPP = "554195585452"; // 41 9558-5452 (com código do país 55)
+
 const collections = [
   {
     tag: "Novo",
-    cat: "Feminino",
+    cat: "Leggings",
     name: "Legging Power Move",
     price: "R$ 189",
+    priceNum: 189,
     old: "R$ 249",
     grad: "linear-gradient(145deg, #d81f2a, #a5121b)",
   },
   {
     tag: "Best-seller",
-    cat: "Feminino",
+    cat: "Tops",
     name: "Top Compressão Flex",
     price: "R$ 119",
+    priceNum: 119,
     old: "R$ 149",
     grad: "linear-gradient(145deg, #1a1614, #3a3230)",
   },
   {
     tag: "Novo",
-    cat: "Feminino",
+    cat: "Conjuntos",
     name: "Conjunto Active Neneve",
     price: "R$ 279",
+    priceNum: 279,
     old: null,
     grad: "linear-gradient(145deg, #d81f2a, #1a1614)",
   },
   {
-    tag: "Kit",
-    cat: "Feminino",
-    name: "Macaquinho Fit Sculpt",
-    price: "R$ 219",
-    old: "R$ 289",
-    grad: "linear-gradient(145deg, #7a0d14, #d81f2a)",
-  },
-  {
     tag: "Best-seller",
-    cat: "Feminino",
+    cat: "Shorts",
     name: "Short Saia Move Free",
     price: "R$ 129",
+    priceNum: 129,
     old: null,
     grad: "linear-gradient(145deg, #2b2523, #d81f2a)",
-  },
-  {
-    tag: "Novo",
-    cat: "Acessórios",
-    name: "Meião Grip Antiderrapante",
-    price: "R$ 49",
-    old: "R$ 69",
-    grad: "linear-gradient(145deg, #a5121b, #1a1614)",
   },
 ];
 
@@ -57,9 +47,11 @@ const reviews = [
 ];
 
 // ===== Render =====
-function renderCollections() {
+function renderCollections(filter = "Todas") {
   const grid = document.getElementById("collectionGrid");
-  grid.innerHTML = collections
+  const list =
+    filter === "Todas" ? collections : collections.filter((p) => p.cat === filter);
+  grid.innerHTML = list
     .map(
       (p) => `
     <article class="card reveal">
@@ -71,7 +63,7 @@ function renderCollections() {
         <h3 class="card__name">${p.name}</h3>
         <div class="card__foot">
           <span class="card__price">${p.old ? `<small>${p.old}</small>` : ""}${p.price}</span>
-          <button class="card__btn" type="button">Comprar</button>
+          <button class="card__btn" type="button" data-name="${p.name}" data-price="${p.priceNum}">Comprar</button>
         </div>
       </div>
     </article>`
@@ -171,26 +163,186 @@ function initHeroSlider() {
   restart();
 }
 
+// ===== Carrinho =====
+let cart = [];
+function initCart() {
+  const drawer = document.getElementById("cartDrawer");
+  if (!drawer) return;
+  const overlay = document.getElementById("cartOverlay");
+  const openBtn = document.getElementById("cartBtn");
+  const closeBtn = document.getElementById("cartClose");
+  const itemsWrap = document.getElementById("cartItems");
+  const totalEl = document.getElementById("cartTotal");
+  const countEl = document.getElementById("cartCount");
+  const checkoutBtn = document.getElementById("checkoutBtn");
+  const emptyMsg = document.getElementById("cartEmpty");
+
+  const money = (n) => "R$ " + n.toLocaleString("pt-BR");
+
+  function open() {
+    drawer.classList.add("is-open");
+    overlay.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  }
+  function close() {
+    drawer.classList.remove("is-open");
+    overlay.classList.remove("is-open");
+    document.body.style.overflow = "";
+  }
+  function total() {
+    return cart.reduce((s, i) => s + i.price * i.qty, 0);
+  }
+  function add(name, price) {
+    const found = cart.find((i) => i.name === name);
+    if (found) found.qty++;
+    else cart.push({ name, price, qty: 1 });
+    render();
+    openBtn.classList.remove("is-bump");
+    void openBtn.offsetWidth; // reinicia a animação
+    openBtn.classList.add("is-bump");
+  }
+  function changeQty(name, delta) {
+    const it = cart.find((i) => i.name === name);
+    if (!it) return;
+    it.qty += delta;
+    if (it.qty <= 0) cart = cart.filter((i) => i.name !== name);
+    render();
+  }
+  function render() {
+    const count = cart.reduce((s, i) => s + i.qty, 0);
+    countEl.textContent = count;
+    countEl.classList.toggle("is-visible", count > 0);
+    if (!cart.length) {
+      itemsWrap.innerHTML = "";
+      emptyMsg.hidden = false;
+      checkoutBtn.disabled = true;
+    } else {
+      emptyMsg.hidden = true;
+      checkoutBtn.disabled = false;
+      itemsWrap.innerHTML = cart
+        .map(
+          (i) => `
+        <div class="cart-item">
+          <div class="cart-item__info">
+            <span class="cart-item__name">${i.name}</span>
+            <span class="cart-item__unit">${money(i.price)} / un.</span>
+          </div>
+          <div class="cart-item__qty">
+            <button type="button" data-act="dec" data-name="${i.name}" aria-label="Diminuir">−</button>
+            <span>${i.qty}</span>
+            <button type="button" data-act="inc" data-name="${i.name}" aria-label="Aumentar">+</button>
+          </div>
+          <span class="cart-item__sub">${money(i.price * i.qty)}</span>
+        </div>`
+        )
+        .join("");
+    }
+    totalEl.textContent = money(total());
+  }
+
+  const grid = document.getElementById("collectionGrid");
+  grid.addEventListener("click", (e) => {
+    const btn = e.target.closest(".card__btn");
+    if (!btn) return;
+    add(btn.dataset.name, Number(btn.dataset.price));
+  });
+  itemsWrap.addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-act]");
+    if (!b) return;
+    changeQty(b.dataset.name, b.dataset.act === "inc" ? 1 : -1);
+  });
+  openBtn.addEventListener("click", open);
+  closeBtn.addEventListener("click", close);
+  overlay.addEventListener("click", close);
+
+  checkoutBtn.addEventListener("click", () => {
+    if (!cart.length) return;
+    const pay = document.querySelector('input[name="pay"]:checked');
+    const payLabel = pay ? pay.value : "A combinar";
+    let text = "Olá! Quero finalizar meu pedido na NNV by Neneve:\n\n";
+    cart.forEach((i) => {
+      text += `• ${i.qty}x ${i.name} — ${money(i.price * i.qty)}\n`;
+    });
+    text += `\nTotal: ${money(total())}\nForma de pagamento: ${payLabel}`;
+    window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, "_blank");
+  });
+
+  render();
+}
+
+let revealObserver;
+function observeReveals() {
+  if (!revealObserver) return;
+  document
+    .querySelectorAll(".reveal:not(.is-visible)")
+    .forEach((el) => revealObserver.observe(el));
+}
 function initReveal() {
-  const items = document.querySelectorAll(".reveal");
-  const observer = new IntersectionObserver(
+  revealObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
+          revealObserver.unobserve(entry.target);
         }
       });
     },
     { threshold: 0.12 }
   );
-  items.forEach((el) => observer.observe(el));
+  observeReveals();
+}
+
+function initCategoryFilter() {
+  const dropdown = document.getElementById("categoryDropdown");
+  if (!dropdown) return;
+  const btn = document.getElementById("categoryBtn");
+  const menu = document.getElementById("categoryMenu");
+  const label = document.getElementById("categoryLabel");
+
+  const cats = ["Todas", ...new Set(collections.map((p) => p.cat))];
+  menu.innerHTML = cats
+    .map(
+      (c, i) =>
+        `<li role="option" class="filter__option${i === 0 ? " is-active" : ""}" data-cat="${c}">${
+          c === "Todas" ? "Todas as categorias" : c
+        }</li>`
+    )
+    .join("");
+
+  function close() {
+    dropdown.classList.remove("is-open");
+    btn.setAttribute("aria-expanded", "false");
+  }
+
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = dropdown.classList.toggle("is-open");
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
+  menu.querySelectorAll(".filter__option").forEach((opt) => {
+    opt.addEventListener("click", () => {
+      const cat = opt.dataset.cat;
+      menu.querySelectorAll(".filter__option").forEach((o) => o.classList.remove("is-active"));
+      opt.classList.add("is-active");
+      label.textContent = cat === "Todas" ? "Todas as categorias" : cat;
+      renderCollections(cat);
+      observeReveals();
+      close();
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target)) close();
+  });
 }
 
 // ===== Init =====
 document.addEventListener("DOMContentLoaded", () => {
   renderCollections();
   renderReviews();
+  initCategoryFilter();
+  initCart();
   initHeroSlider();
   initNav();
   initNewsletter();
