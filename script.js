@@ -50,13 +50,6 @@ const collections = [
   },
 ];
 
-const benefits = [
-  { icon: "💨", title: "Tecido Dry-Fit", text: "Absorve o suor e seca rápido, mantendo você leve do início ao fim." },
-  { icon: "🏋️", title: "Compressão Ativa", text: "Sustentação muscular que melhora o desempenho e acelera a recuperação." },
-  { icon: "🌱", title: "Anti-odor", text: "Tecnologia antibacteriana que neutraliza odores mesmo nos treinos mais intensos." },
-  { icon: "♻️", title: "Durável e Sustentável", text: "Peças que aguentam o ritmo, feitas com processos responsáveis." },
-];
-
 const reviews = [
   { text: "Melhor legging que já usei. Não marca, não desce e é super confortável no crossfit.", name: "Amanda R.", role: "CrossFit · São Paulo", initials: "AR" },
   { text: "As regatas são absurdas de leves. Corro 10km e a peça continua sequinha.", name: "Bruno L.", role: "Corredor · Rio de Janeiro", initials: "BL" },
@@ -82,20 +75,6 @@ function renderCollections() {
         </div>
       </div>
     </article>`
-    )
-    .join("");
-}
-
-function renderBenefits() {
-  const grid = document.getElementById("benefitGrid");
-  grid.innerHTML = benefits
-    .map(
-      (b) => `
-    <div class="benefit reveal">
-      <div class="benefit__icon">${b.icon}</div>
-      <h3>${b.title}</h3>
-      <p>${b.text}</p>
-    </div>`
     )
     .join("");
 }
@@ -168,7 +147,6 @@ function initReveal() {
 // ===== Init =====
 document.addEventListener("DOMContentLoaded", () => {
   renderCollections();
-  renderBenefits();
   renderReviews();
   initNav();
   initNewsletter();
