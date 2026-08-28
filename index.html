@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Fitines — roupas fitness de alta performance. Peças que acompanham cada movimento do seu treino." />
+  <title>Fitines — Moda Fitness de Alta Performance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Barra de anúncio -->
+  <div class="topbar">
+    <p>Frete grátis acima de R$ 199 · Use <strong>FITINES10</strong> e ganhe 10% na primeira compra</p>
+  </div>
+
+  <!-- Cabeçalho -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="#hero" class="logo">FIT<span>INES</span></a>
+      <nav class="nav" id="nav">
+        <a href="#colecoes" class="nav__link">Coleções</a>
+        <a href="#beneficios" class="nav__link">Diferenciais</a>
+        <a href="#sobre" class="nav__link">Sobre</a>
+        <a href="#depoimentos" class="nav__link">Avaliações</a>
+        <a href="#newsletter" class="nav__link nav__cta">Assine</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero" id="hero">
+      <div class="container hero__inner">
+        <div class="hero__content">
+          <span class="hero__tag">Nova coleção 2026</span>
+          <h1 class="hero__title">Roupas que <em>acompanham</em> cada movimento</h1>
+          <p class="hero__text">
+            Tecidos de alta performance, compressão inteligente e caimento perfeito.
+            A Fitines veste você do aquecimento ao último rep.
+          </p>
+          <div class="hero__actions">
+            <a href="#colecoes" class="btn btn--primary">Ver coleções</a>
+            <a href="#sobre" class="btn btn--ghost">Nossa história</a>
+          </div>
+          <div class="hero__stats">
+            <div><strong>+50 mil</strong><span>clientes ativos</span></div>
+            <div><strong>4.9/5</strong><span>avaliação média</span></div>
+            <div><strong>30 dias</strong><span>troca garantida</span></div>
+          </div>
+        </div>
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero__card hero__card--1">Dry-Fit</div>
+          <div class="hero__card hero__card--2">Compressão</div>
+          <div class="hero__card hero__card--3">Anti-odor</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marquee de valores -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>PERFORMANCE</span><span>•</span><span>CONFORTO</span><span>•</span>
+        <span>ESTILO</span><span>•</span><span>DURABILIDADE</span><span>•</span>
+        <span>PERFORMANCE</span><span>•</span><span>CONFORTO</span><span>•</span>
+        <span>ESTILO</span><span>•</span><span>DURABILIDADE</span><span>•</span>
+      </div>
+    </div>
+
+    <!-- Coleções -->
+    <section class="section" id="colecoes">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow">Nossas coleções</span>
+          <h2 class="section__title">Escolha o seu treino, a gente veste</h2>
+          <p class="section__sub">Peças pensadas para cada modalidade — do funcional ao yoga.</p>
+        </div>
+        <div class="grid grid--collections" id="collectionGrid"></div>
+      </div>
+    </section>
+
+    <!-- Benefícios -->
+    <section class="section section--alt" id="beneficios">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow">Por que Fitines</span>
+          <h2 class="section__title">Feita para render mais</h2>
+        </div>
+        <div class="grid grid--benefits" id="benefitGrid"></div>
+      </div>
+    </section>
+
+    <!-- Sobre -->
+    <section class="section about" id="sobre">
+      <div class="container about__inner">
+        <div class="about__media" aria-hidden="true">
+          <div class="about__blob"></div>
+          <div class="about__badge">Desde 2019</div>
+        </div>
+        <div class="about__content">
+          <span class="eyebrow">Nossa história</span>
+          <h2 class="section__title">Nascida do treino, feita pra performance</h2>
+          <p>
+            A Fitines começou numa garagem, com dois atletas incomodados com roupas que
+            não acompanhavam a intensidade dos treinos. Hoje, somos uma marca brasileira
+            que une tecnologia têxtil, design nacional e compromisso com o movimento.
+          </p>
+          <p>
+            Cada peça passa por testes reais de suor, alongamento e lavagem — porque
+            a gente veste quem não para.
+          </p>
+          <ul class="about__list">
+            <li>Produção 100% nacional</li>
+            <li>Tecidos com certificação de qualidade</li>
+            <li>Embalagens recicláveis</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Depoimentos -->
+    <section class="section section--alt" id="depoimentos">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow">Quem veste, aprova</span>
+          <h2 class="section__title">O que dizem sobre a Fitines</h2>
+        </div>
+        <div class="grid grid--reviews" id="reviewGrid"></div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter" id="newsletter">
+      <div class="container newsletter__inner">
+        <div class="newsletter__text">
+          <h2>Ganhe 10% no primeiro pedido</h2>
+          <p>Assine e receba lançamentos, promoções exclusivas e dicas de treino.</p>
+        </div>
+        <form class="newsletter__form" id="newsletterForm" novalidate>
+          <input type="email" id="emailInput" placeholder="Seu melhor e-mail" aria-label="E-mail" required />
+          <button type="submit" class="btn btn--primary">Quero meu cupom</button>
+          <p class="newsletter__msg" id="formMsg" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a href="#hero" class="logo">FIT<span>INES</span></a>
+        <p>Moda fitness de alta performance, feita no Brasil.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Instagram">Instagram</a>
+          <a href="#" aria-label="TikTok">TikTok</a>
+          <a href="#" aria-label="YouTube">YouTube</a>
+        </div>
+      </div>
+      <div class="footer__cols">
+        <div>
+          <h4>Loja</h4>
+          <a href="#colecoes">Feminino</a>
+          <a href="#colecoes">Masculino</a>
+          <a href="#colecoes">Acessórios</a>
+          <a href="#colecoes">Lançamentos</a>
+        </div>
+        <div>
+          <h4>Ajuda</h4>
+          <a href="#">Trocas e devoluções</a>
+          <a href="#">Guia de tamanhos</a>
+          <a href="#">Rastrear pedido</a>
+          <a href="#">Contato</a>
+        </div>
+        <div>
+          <h4>Empresa</h4>
+          <a href="#sobre">Sobre nós</a>
+          <a href="#">Sustentabilidade</a>
+          <a href="#">Trabalhe conosco</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container">
+        <p>© <span id="year"></span> Fitines. Todos os direitos reservados.</p>
+        <p>CNPJ 00.000.000/0001-00 · Feito com 💪 no Brasil</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
