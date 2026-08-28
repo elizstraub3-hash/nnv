@@ -128,6 +128,49 @@ function initNewsletter() {
   });
 }
 
+function initHeroSlider() {
+  const slider = document.getElementById("heroSlider");
+  if (!slider) return;
+  const slides = Array.from(slider.querySelectorAll(".hero__slide"));
+  const dotsWrap = document.getElementById("heroDots");
+  if (slides.length < 2) return;
+
+  let index = 0;
+  let timer;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement("button");
+    dot.className = "hero__dot";
+    dot.type = "button";
+    dot.setAttribute("aria-label", "Ir para o slide " + (i + 1));
+    dot.addEventListener("click", () => go(i));
+    dotsWrap.appendChild(dot);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function render() {
+    slides.forEach((s, i) => s.classList.toggle("is-active", i === index));
+    dots.forEach((d, i) => d.classList.toggle("is-active", i === index));
+  }
+  function go(n) {
+    index = (n + slides.length) % slides.length;
+    render();
+    restart();
+  }
+  function restart() {
+    clearInterval(timer);
+    timer = setInterval(() => go(index + 1), 6000);
+  }
+
+  document.getElementById("heroPrev").addEventListener("click", () => go(index - 1));
+  document.getElementById("heroNext").addEventListener("click", () => go(index + 1));
+  slider.addEventListener("mouseenter", () => clearInterval(timer));
+  slider.addEventListener("mouseleave", restart);
+
+  render();
+  restart();
+}
+
 function initReveal() {
   const items = document.querySelectorAll(".reveal");
   const observer = new IntersectionObserver(
@@ -148,6 +191,7 @@ function initReveal() {
 document.addEventListener("DOMContentLoaded", () => {
   renderCollections();
   renderReviews();
+  initHeroSlider();
   initNav();
   initNewsletter();
   initReveal();

@@ -35,22 +35,44 @@
   </header>
 
   <main>
-    <!-- Hero -->
+    <!-- Hero (carrossel) -->
     <section class="hero" id="hero">
-      <div class="container hero__inner">
-        <div class="hero__content">
-          <img src="logo-horizontal-preto.png" alt="By Neneve — Active Wear" class="hero__logo" />
-          <span class="hero__tag">Nova coleção 2026</span>
-          <h1 class="hero__title">Roupas que <em>acompanham</em> cada movimento</h1>
-          <p class="hero__text">
-            Sua loja online do mundo fitness.
-          </p>
-          <div class="hero__actions">
-            <a href="#colecoes" class="btn btn--primary">Ver coleções</a>
-            <a href="#sobre" class="btn btn--ghost">Nossa história</a>
+      <div class="hero__slider" id="heroSlider">
+        <!-- Slide 1 -->
+        <div class="hero__slide is-active">
+          <div class="container hero__inner">
+            <div class="hero__content">
+              <img src="logo-horizontal-preto.png" alt="By Neneve — Active Wear" class="hero__logo" />
+              <span class="hero__tag">Nova coleção 2026</span>
+              <h1 class="hero__title">Roupas que <em>acompanham</em> cada movimento</h1>
+              <p class="hero__text">Sua loja online do mundo fitness.</p>
+              <div class="hero__actions">
+                <a href="#colecoes" class="btn btn--primary">Ver coleções</a>
+                <a href="#sobre" class="btn btn--ghost">Nossa história</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 2 -->
+        <div class="hero__slide">
+          <div class="container hero__inner">
+            <div class="hero__content">
+              <img src="logo-horizontal-vermelho.png" alt="By Neneve — Active Wear" class="hero__logo" />
+              <span class="hero__tag">Loja online</span>
+              <h1 class="hero__title">Escolha a sua peça online, <em>tamanho</em> e cores</h1>
+              <p class="hero__text">Fácil e prático.</p>
+              <div class="hero__actions">
+                <a href="#colecoes" class="btn btn--primary">Ver coleções</a>
+                <a href="#sobre" class="btn btn--ghost">Nossa história</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <button class="hero__nav hero__nav--prev" id="heroPrev" aria-label="Slide anterior">&#8249;</button>
+      <button class="hero__nav hero__nav--next" id="heroNext" aria-label="Próximo slide">&#8250;</button>
+      <div class="hero__dots" id="heroDots" aria-label="Navegação dos slides"></div>
     </section>
 
     <!-- Marquee de valores -->
