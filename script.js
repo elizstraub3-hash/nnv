@@ -1,42 +1,83 @@
 // ===== Dados =====
 const WHATSAPP = "554195585452"; // 41 9558-5452 (com código do país 55)
 
+const SIZES = ["PP", "P", "M", "G", "GG"];
 const collections = [
   {
     tag: "Novo",
-    cat: "Leggings",
-    name: "Legging Power Move",
-    price: "R$ 189",
-    priceNum: 189,
-    old: "R$ 249",
-    grad: "linear-gradient(145deg, #d81f2a, #a5121b)",
+    cat: "Macaquinhos",
+    name: "Macaquinho Sculpt",
+    code: "NNV-MAC-001",
+    price: "R$ 69,90",
+    priceNum: 69.9,
+    old: null,
+    img: "prod-macaquinho.jpg",
+    colors: [
+      { name: "Vermelho", hex: "#a5121b", sizes: ["G"] },
+      { name: "Azul", hex: "#2f6fb0", sizes: ["P"] },
+      { name: "Preto", hex: "#141414", sizes: ["M"] },
+    ],
   },
   {
     tag: "Best-seller",
-    cat: "Tops",
-    name: "Top Compressão Flex",
-    price: "R$ 119",
-    priceNum: 119,
-    old: "R$ 149",
-    grad: "linear-gradient(145deg, #1a1614, #3a3230)",
+    cat: "Conjuntos",
+    name: "Conjunto Flare Power",
+    code: "NNV-CJ-002",
+    price: "R$ 160,00",
+    priceNum: 160,
+    old: null,
+    img: "prod-flare-front.jpg",
+    alt: "prod-flare-back.jpg",
+    colors: [{ name: "Preto", hex: "#141414" }],
+    sizes: SIZES,
+    soldOut: true,
   },
   {
     tag: "Novo",
     cat: "Conjuntos",
-    name: "Conjunto Active Neneve",
+    name: "Conjunto Active Marinho",
+    code: "NNV-CJ-003",
     price: "R$ 279",
     priceNum: 279,
     old: null,
-    grad: "linear-gradient(145deg, #d81f2a, #1a1614)",
+    img: "prod-marinho-front.jpg",
+    alt: "prod-marinho-back.jpg",
+    colors: [
+      { name: "Marinho", hex: "#1b2440" },
+      { name: "Preto", hex: "#141414" },
+    ],
+    sizes: SIZES,
+  },
+  {
+    tag: "Novo",
+    cat: "Conjuntos",
+    name: "Conjunto Move Cinza",
+    code: "NNV-CJ-004",
+    price: "R$ 259",
+    priceNum: 259,
+    old: null,
+    img: "prod-conjunto-cinza.jpg",
+    colors: [
+      { name: "Cinza", hex: "#8a8683" },
+      { name: "Preto", hex: "#141414" },
+    ],
+    sizes: SIZES,
   },
   {
     tag: "Best-seller",
     cat: "Shorts",
-    name: "Short Saia Move Free",
-    price: "R$ 129",
-    priceNum: 129,
-    old: null,
-    grad: "linear-gradient(145deg, #2b2523, #d81f2a)",
+    name: "Conjunto Short Cintura Alta",
+    code: "NNV-SH-005",
+    price: "R$ 169",
+    priceNum: 169,
+    old: "R$ 219",
+    img: "prod-short-front.jpg",
+    alt: "prod-short-back.jpg",
+    colors: [
+      { name: "Azul", hex: "#a9c7e0" },
+      { name: "Preto", hex: "#141414" },
+    ],
+    sizes: SIZES,
   },
 ];
 
@@ -51,23 +92,50 @@ function renderCollections(filter = "Todas") {
   const grid = document.getElementById("collectionGrid");
   const list =
     filter === "Todas" ? collections : collections.filter((p) => p.cat === filter);
+  const sizesOf = (p, c) => (c.sizes && c.sizes.length ? c.sizes : p.sizes || SIZES);
   grid.innerHTML = list
-    .map(
-      (p) => `
-    <article class="card reveal">
-      <div class="card__img" style="background:${p.grad}">
-        <span class="card__tag">${p.tag}</span>
+    .map((p) => {
+      const initialSizes = sizesOf(p, p.colors[0]);
+      return `
+    <article class="card reveal${p.soldOut ? " card--out" : ""}" data-name="${p.name}" data-price="${p.priceNum}" data-code="${p.code}">
+      <div class="card__img">
+        <img class="card__photo" src="${p.img}" alt="${p.name}" loading="lazy" />
+        ${p.alt ? `<img class="card__photo card__photo--alt" src="${p.alt}" alt="${p.name} — costas" loading="lazy" />` : ""}
+        ${p.soldOut ? `<span class="card__tag card__tag--out">Esgotado</span>` : `<span class="card__tag">${p.tag}</span>`}
       </div>
       <div class="card__body">
         <span class="card__cat">${p.cat}</span>
         <h3 class="card__name">${p.name}</h3>
+        <span class="card__code">Cód. ${p.code}</span>
+        <div class="card__colors" role="group" aria-label="Cores disponíveis">
+          ${p.colors
+            .map(
+              (c, i) =>
+                `<button type="button" class="swatch${i === 0 ? " is-active" : ""}" data-color="${c.name}" data-sizes="${sizesOf(p, c).join(",")}" style="--sw:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`
+            )
+            .join("")}
+        </div>
+        ${
+          p.soldOut
+            ? ""
+            : `<label class="card__size">
+          <span class="card__size-label">Tamanho</span>
+          <select class="card__select" aria-label="Tamanho">
+            ${initialSizes.map((s) => `<option value="${s}">${s}</option>`).join("")}
+          </select>
+        </label>`
+        }
         <div class="card__foot">
           <span class="card__price">${p.old ? `<small>${p.old}</small>` : ""}${p.price}</span>
-          <button class="card__btn" type="button" data-name="${p.name}" data-price="${p.priceNum}">Comprar</button>
+          ${
+            p.soldOut
+              ? `<button class="card__btn card__restock" type="button">Pedir reposição</button>`
+              : `<button class="card__btn" type="button">Comprar</button>`
+          }
         </div>
       </div>
-    </article>`
-    )
+    </article>`;
+    })
     .join("");
 }
 
@@ -177,7 +245,8 @@ function initCart() {
   const checkoutBtn = document.getElementById("checkoutBtn");
   const emptyMsg = document.getElementById("cartEmpty");
 
-  const money = (n) => "R$ " + n.toLocaleString("pt-BR");
+  const money = (n) =>
+    "R$ " + n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   function open() {
     drawer.classList.add("is-open");
@@ -192,20 +261,21 @@ function initCart() {
   function total() {
     return cart.reduce((s, i) => s + i.price * i.qty, 0);
   }
-  function add(name, price) {
-    const found = cart.find((i) => i.name === name);
+  function add(name, price, color, size) {
+    const key = `${name}|${color}|${size}`;
+    const found = cart.find((i) => i.key === key);
     if (found) found.qty++;
-    else cart.push({ name, price, qty: 1 });
+    else cart.push({ key, name, price, color, size, qty: 1 });
     render();
     openBtn.classList.remove("is-bump");
     void openBtn.offsetWidth; // reinicia a animação
     openBtn.classList.add("is-bump");
   }
-  function changeQty(name, delta) {
-    const it = cart.find((i) => i.name === name);
+  function changeQty(key, delta) {
+    const it = cart.find((i) => i.key === key);
     if (!it) return;
     it.qty += delta;
-    if (it.qty <= 0) cart = cart.filter((i) => i.name !== name);
+    if (it.qty <= 0) cart = cart.filter((i) => i.key !== key);
     render();
   }
   function render() {
@@ -225,12 +295,13 @@ function initCart() {
         <div class="cart-item">
           <div class="cart-item__info">
             <span class="cart-item__name">${i.name}</span>
+            <span class="cart-item__meta">${[i.color, i.size ? "Tam " + i.size : ""].filter(Boolean).join(" · ")}</span>
             <span class="cart-item__unit">${money(i.price)} / un.</span>
           </div>
           <div class="cart-item__qty">
-            <button type="button" data-act="dec" data-name="${i.name}" aria-label="Diminuir">−</button>
+            <button type="button" data-act="dec" data-key="${i.key}" aria-label="Diminuir">−</button>
             <span>${i.qty}</span>
-            <button type="button" data-act="inc" data-name="${i.name}" aria-label="Aumentar">+</button>
+            <button type="button" data-act="inc" data-key="${i.key}" aria-label="Aumentar">+</button>
           </div>
           <span class="cart-item__sub">${money(i.price * i.qty)}</span>
         </div>`
@@ -242,14 +313,40 @@ function initCart() {
 
   const grid = document.getElementById("collectionGrid");
   grid.addEventListener("click", (e) => {
+    // seleção de cor (swatch) — atualiza os tamanhos disponíveis daquela cor
+    const sw = e.target.closest(".swatch");
+    if (sw) {
+      const card = sw.closest(".card");
+      card.querySelectorAll(".swatch").forEach((s) => s.classList.remove("is-active"));
+      sw.classList.add("is-active");
+      const select = card.querySelector(".card__select");
+      const sizes = (sw.dataset.sizes || "").split(",").filter(Boolean);
+      if (select && sizes.length) {
+        select.innerHTML = sizes.map((s) => `<option value="${s}">${s}</option>`).join("");
+      }
+      return;
+    }
+    // pedir reposição (produto esgotado)
+    const restock = e.target.closest(".card__restock");
+    if (restock) {
+      const card = restock.closest(".card");
+      const text = `Olá! Gostaria de pedir a reposição do produto ${card.dataset.name} (Cód. ${card.dataset.code}). Tem previsão de voltar ao estoque?`;
+      window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, "_blank");
+      return;
+    }
     const btn = e.target.closest(".card__btn");
     if (!btn) return;
-    add(btn.dataset.name, Number(btn.dataset.price));
+    const card = btn.closest(".card");
+    const activeSwatch = card.querySelector(".swatch.is-active");
+    const color = activeSwatch ? activeSwatch.dataset.color : "";
+    const select = card.querySelector(".card__select");
+    const size = select ? select.value : "";
+    add(card.dataset.name, Number(card.dataset.price), color, size);
   });
   itemsWrap.addEventListener("click", (e) => {
     const b = e.target.closest("button[data-act]");
     if (!b) return;
-    changeQty(b.dataset.name, b.dataset.act === "inc" ? 1 : -1);
+    changeQty(b.dataset.key, b.dataset.act === "inc" ? 1 : -1);
   });
   openBtn.addEventListener("click", open);
   closeBtn.addEventListener("click", close);
@@ -261,7 +358,8 @@ function initCart() {
     const payLabel = pay ? pay.value : "A combinar";
     let text = "Olá! Quero finalizar meu pedido na NNV by Neneve:\n\n";
     cart.forEach((i) => {
-      text += `• ${i.qty}x ${i.name} — ${money(i.price * i.qty)}\n`;
+      const det = [i.color, i.size ? "Tam " + i.size : ""].filter(Boolean).join(", ");
+      text += `• ${i.qty}x ${i.name}${det ? ` (${det})` : ""} — ${money(i.price * i.qty)}\n`;
     });
     text += `\nTotal: ${money(total())}\nForma de pagamento: ${payLabel}`;
     window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, "_blank");
