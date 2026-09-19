@@ -35,18 +35,18 @@ const collections = [
   },
   {
     tag: "Novo",
-    cat: "Conjuntos",
-    name: "Conjunto Move Cinza",
-    code: "NNV-CJ-004",
-    price: "R$ 259",
-    priceNum: 259,
+    cat: "Looks",
+    name: "Look Cinza — Short + Baby Tee",
+    code: "NNV-LK-004",
+    price: "",
+    priceNum: 0,
     old: null,
     img: "prod-conjunto-cinza.jpg",
-    colors: [
-      { name: "Cinza", hex: "#8a8683" },
-      { name: "Preto", hex: "#141414" },
-    ],
-    sizes: SIZES,
+    note: "Short e baby tee vendidos separadamente.",
+    lookSuggestion: true,
+    soldOut: true,
+    colors: [{ name: "Cinza", hex: "#8a8683" }],
+    sizes: ["Único"],
   },
   {
     tag: "Best-seller",
@@ -66,13 +66,13 @@ const collections = [
   },
   {
     tag: "Novo",
-    cat: "Baby Look",
-    name: "Baby Look",
+    cat: "Baby Tee",
+    name: "Baby Tee",
     code: "NNV-BBY-006",
     price: "R$ 35,00",
     priceNum: 35,
     old: null,
-    img: "prod-baby-look.jpg",
+    img: "prod-baby-tee.jpg",
     colors: [{ name: "Preto", hex: "#141414" }],
     sizes: ["M"],
   },
@@ -181,6 +181,7 @@ function renderCollections(filter = "Todas") {
         <img class="card__photo" src="${p.img}" alt="${p.name}" loading="lazy" />
         ${p.alt ? `<img class="card__photo card__photo--alt" src="${p.alt}" alt="${p.name} — costas" loading="lazy" />` : ""}
         ${p.soldOut ? `<span class="card__tag card__tag--out">Esgotado</span>` : `<span class="card__tag">${p.tag}</span>`}
+        ${p.lookSuggestion ? `<span class="card__look">Sugestão de look</span>` : ""}
       </div>
       <div class="card__body">
         <span class="card__cat">${p.cat}</span>
@@ -206,7 +207,7 @@ function renderCollections(filter = "Todas") {
         </label>`
         }
         <div class="card__foot">
-          <span class="card__price">${p.old ? `<small>${p.old}</small>` : ""}${p.price}</span>
+          <span class="card__price">${p.price ? `${p.old ? `<small>${p.old}</small>` : ""}${p.price}` : ""}</span>
           ${
             p.soldOut
               ? `<button class="card__btn card__restock" type="button">Pedir reposição</button>`
