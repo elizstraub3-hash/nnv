@@ -209,14 +209,14 @@ function renderCollections(filter = "Todas") {
             .join("")}
         </div>
         ${
-          p.soldOut
-            ? ""
-            : `<label class="card__size">
+          p.cat !== "Acessórios" && !p.lookSuggestion
+            ? `<label class="card__size">
           <span class="card__size-label">Tamanho</span>
           <select class="card__select" aria-label="Tamanho">
             ${initialSizes.map((s) => `<option value="${s}">${s}</option>`).join("")}
           </select>
         </label>`
+            : ""
         }
         <div class="card__foot">
           <span class="card__price">${p.price ? `${p.old ? `<small>${p.old}</small>` : ""}${p.price}` : ""}</span>
