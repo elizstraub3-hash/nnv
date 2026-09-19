@@ -82,7 +82,8 @@ const collections = [
     price: "R$ 39,90",
     priceNum: 39.9,
     old: null,
-    img: "prod-regata-azul.jpg",
+    img: "prod-regata-flat.jpg",
+    images: ["prod-regata-flat.jpg", "prod-regata-azul.jpg"],
     colors: [
       { name: "Azul", hex: "#2f6fb0", sizes: ["M"] },
       { name: "Preto", hex: "#141414", sizes: ["M"] },
@@ -113,6 +114,7 @@ const collections = [
     priceNum: 49.9,
     old: null,
     img: "prod-legging-marinho.jpg",
+    images: ["prod-legging-marinho.jpg", "prod-legging-flat.jpg"],
     note: "Só a legging · não acompanha a parte de cima.",
     colors: [
       { name: "Azul marinho", hex: "#1b2440", sizes: ["G"] },
