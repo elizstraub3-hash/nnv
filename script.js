@@ -24,8 +24,8 @@ const collections = [
     cat: "Conjuntos",
     name: "Conjunto Flare Power",
     code: "NNV-CJ-002",
-    price: "R$ 160,90",
-    priceNum: 160.9,
+    price: "R$ 159,90",
+    priceNum: 159.9,
     old: null,
     img: "prod-flare-front.jpg",
     alt: "prod-flare-back.jpg",
@@ -49,20 +49,18 @@ const collections = [
     sizes: ["Único"],
   },
   {
-    tag: "Best-seller",
-    cat: "Shorts",
-    name: "Conjunto Short Cintura Alta",
-    code: "NNV-SH-005",
-    price: "R$ 169,90",
-    priceNum: 169.9,
-    old: "R$ 219,90",
+    tag: "Novo",
+    cat: "Sugestões de looks",
+    name: "Look Azul — Short Ribbed + Regata",
+    code: "NNV-LK-005",
+    price: "",
+    priceNum: 0,
+    old: null,
     img: "prod-short-front.jpg",
     alt: "prod-short-back.jpg",
-    colors: [
-      { name: "Azul", hex: "#a9c7e0" },
-      { name: "Preto", hex: "#141414" },
-    ],
-    sizes: SIZES,
+    note: "Short Ribbed + Regata Azul — peças vendidas separadamente.",
+    lookSuggestion: true,
+    colors: [{ name: "Azul", hex: "#a9c7e0" }],
   },
   {
     tag: "Novo",
@@ -81,13 +79,13 @@ const collections = [
     cat: "Regatas",
     name: "Regata",
     code: "NNV-REG-007",
-    price: "R$ 40,90",
-    priceNum: 40.9,
+    price: "R$ 39,90",
+    priceNum: 39.9,
     old: null,
-    img: "prod-regata.jpg",
+    img: "prod-regata-azul.jpg",
     colors: [
-      { name: "Preto", hex: "#141414", sizes: ["M"] },
       { name: "Azul", hex: "#2f6fb0", sizes: ["M"] },
+      { name: "Preto", hex: "#141414", sizes: ["M"] },
     ],
   },
   {
@@ -126,8 +124,8 @@ const collections = [
     cat: "Conjuntos",
     name: "Conjunto Verde Militar",
     code: "NNV-CJ-010",
-    price: "R$ 120,90",
-    priceNum: 120.9,
+    price: "R$ 119,90",
+    priceNum: 119.9,
     old: null,
     img: "prod-conjunto-verde.jpg",
     colors: [{ name: "Verde militar", hex: "#4d5a3a" }],
@@ -179,16 +177,22 @@ const reviews = [
 ];
 
 // ===== Render =====
-function renderCollections(filter = "Todas") {
-  const grid = document.getElementById("collectionGrid");
-  const list =
-    filter === "Todas" ? collections : collections.filter((p) => p.cat === filter);
-  const sizesOf = (p, c) => (c.sizes && c.sizes.length ? c.sizes : p.sizes || SIZES);
-  grid.innerHTML = list
-    .map((p) => {
-      const initialSizes = sizesOf(p, p.colors[0]);
-      const imgs = p.images && p.images.length ? p.images : [p.img, p.alt].filter(Boolean);
-      return `
+const CAT_ORDER = [
+  "Macaquinhos",
+  "Conjuntos",
+  "Shorts",
+  "Leggings",
+  "Regatas",
+  "Baby Tee",
+  "Sugestões de looks",
+  "Acessórios",
+];
+const sizesOf = (p, c) => (c.sizes && c.sizes.length ? c.sizes : p.sizes || SIZES);
+
+function cardHTML(p) {
+  const initialSizes = sizesOf(p, p.colors[0]);
+  const imgs = p.images && p.images.length ? p.images : [p.img, p.alt].filter(Boolean);
+  return `
     <article class="card reveal${p.soldOut ? " card--out" : ""}" data-name="${p.name}" data-price="${p.priceNum}" data-code="${p.code}">
       <div class="card__img">
         ${imgs
@@ -235,11 +239,30 @@ function renderCollections(filter = "Todas") {
           ${
             p.soldOut
               ? `<button class="card__btn card__restock" type="button">Pedir reposição</button>`
+              : p.lookSuggestion
+              ? `<button class="card__btn card__lookbtn" type="button">Quero este look</button>`
               : `<button class="card__btn" type="button">Comprar</button>`
           }
         </div>
       </div>
     </article>`;
+}
+
+function renderCollections(filter = "Todas") {
+  const wrap = document.getElementById("collectionGrid");
+  const cats =
+    filter === "Todas"
+      ? CAT_ORDER.filter((c) => collections.some((p) => p.cat === c))
+      : [filter];
+  wrap.innerHTML = cats
+    .map((cat) => {
+      const items = collections.filter((p) => p.cat === cat);
+      if (!items.length) return "";
+      return `
+      <div class="cat-group">
+        <h3 class="cat-group__title">${cat}</h3>
+        <div class="grid grid--collections">${items.map(cardHTML).join("")}</div>
+      </div>`;
     })
     .join("");
 }
@@ -467,6 +490,14 @@ function initCart() {
     if (restock) {
       const card = restock.closest(".card");
       const text = `Olá! Gostaria de pedir a reposição do produto ${card.dataset.name} (Cód. ${card.dataset.code}). Tem previsão de voltar ao estoque?`;
+      window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, "_blank");
+      return;
+    }
+    // sugestão de look — quero este look
+    const lookbtn = e.target.closest(".card__lookbtn");
+    if (lookbtn) {
+      const card = lookbtn.closest(".card");
+      const text = `Olá! Gostei da sugestão de look "${card.dataset.name}". Quero montar esse look 😍`;
       window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, "_blank");
       return;
     }
