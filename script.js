@@ -91,6 +91,20 @@ const collections = [
     colors: [{ name: "Preto", hex: "#141414" }],
     sizes: ["M"],
   },
+  {
+    tag: "Novo",
+    cat: "Regatas",
+    name: "Regata",
+    code: "NNV-REG-007",
+    price: "R$ 40,00",
+    priceNum: 40,
+    old: null,
+    img: "prod-regata.jpg",
+    colors: [
+      { name: "Preto", hex: "#141414", sizes: ["M"] },
+      { name: "Azul", hex: "#2f6fb0", sizes: ["M"] },
+    ],
+  },
 ];
 
 const reviews = [
