@@ -35,7 +35,7 @@ const collections = [
   },
   {
     tag: "Novo",
-    cat: "Looks",
+    cat: "Sugestões de looks",
     name: "Look Cinza — Short + Baby Tee",
     code: "NNV-LK-004",
     price: "",
@@ -156,6 +156,18 @@ const collections = [
     old: null,
     img: "prod-conjunto-marrom.jpg",
     colors: [{ name: "Marrom", hex: "#8a6b52" }],
+    sizes: ["Único"],
+  },
+  {
+    tag: "Novo",
+    cat: "Acessórios",
+    name: "Bolsa de Treino",
+    code: "NNV-BAG-013",
+    price: "R$ 69,90",
+    priceNum: 69.9,
+    old: null,
+    img: "prod-bolsa.jpg",
+    colors: [{ name: "Preto", hex: "#141414" }],
     sizes: ["Único"],
   },
 ];
@@ -449,6 +461,39 @@ function initCart() {
   render();
 }
 
+function initLightbox() {
+  const box = document.getElementById("lightbox");
+  if (!box) return;
+  const img = document.getElementById("lightboxImg");
+  const closeBtn = document.getElementById("lightboxClose");
+  const grid = document.getElementById("collectionGrid");
+
+  function open(src, alt) {
+    img.src = src;
+    img.alt = alt || "";
+    box.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  }
+  function close() {
+    box.classList.remove("is-open");
+    document.body.style.overflow = "";
+  }
+  grid.addEventListener("click", (e) => {
+    const photo = e.target.closest(".card__photo");
+    if (!photo) return;
+    // usa a foto principal do card (primeira)
+    const main = photo.closest(".card__img").querySelector(".card__photo");
+    open(main.src, main.alt);
+  });
+  closeBtn.addEventListener("click", close);
+  box.addEventListener("click", (e) => {
+    if (e.target === box) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
+}
+
 let revealObserver;
 function observeReveals() {
   if (!revealObserver) return;
@@ -522,6 +567,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderReviews();
   initCategoryFilter();
   initCart();
+  initLightbox();
   initHeroSlider();
   initNav();
   initNewsletter();
