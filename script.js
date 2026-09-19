@@ -115,7 +115,6 @@ const collections = [
     old: null,
     img: "prod-legging-marinho.jpg",
     images: ["prod-legging-marinho.jpg", "prod-legging-flat.jpg"],
-    note: "Só a legging · não acompanha a parte de cima.",
     colors: [
       { name: "Azul marinho", hex: "#1b2440", sizes: ["G"] },
       { name: "Preto", hex: "#141414", sizes: ["G"] },
