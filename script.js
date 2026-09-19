@@ -24,8 +24,8 @@ const collections = [
     cat: "Conjuntos",
     name: "Conjunto Flare Power",
     code: "NNV-CJ-002",
-    price: "R$ 160,00",
-    priceNum: 160,
+    price: "R$ 160,90",
+    priceNum: 160.9,
     old: null,
     img: "prod-flare-front.jpg",
     alt: "prod-flare-back.jpg",
@@ -53,9 +53,9 @@ const collections = [
     cat: "Shorts",
     name: "Conjunto Short Cintura Alta",
     code: "NNV-SH-005",
-    price: "R$ 169",
-    priceNum: 169,
-    old: "R$ 219",
+    price: "R$ 169,90",
+    priceNum: 169.9,
+    old: "R$ 219,90",
     img: "prod-short-front.jpg",
     alt: "prod-short-back.jpg",
     colors: [
@@ -69,8 +69,8 @@ const collections = [
     cat: "Baby Tee",
     name: "Baby Tee",
     code: "NNV-BBY-006",
-    price: "R$ 35,00",
-    priceNum: 35,
+    price: "R$ 35,90",
+    priceNum: 35.9,
     old: null,
     img: "prod-baby-tee.jpg",
     colors: [{ name: "Preto", hex: "#141414" }],
@@ -81,8 +81,8 @@ const collections = [
     cat: "Regatas",
     name: "Regata",
     code: "NNV-REG-007",
-    price: "R$ 40,00",
-    priceNum: 40,
+    price: "R$ 40,90",
+    priceNum: 40.9,
     old: null,
     img: "prod-regata.jpg",
     colors: [
@@ -126,8 +126,8 @@ const collections = [
     cat: "Conjuntos",
     name: "Conjunto Verde Militar",
     code: "NNV-CJ-010",
-    price: "R$ 120,00",
-    priceNum: 120,
+    price: "R$ 120,90",
+    priceNum: 120.9,
     old: null,
     img: "prod-conjunto-verde.jpg",
     colors: [{ name: "Verde militar", hex: "#4d5a3a" }],
@@ -276,7 +276,7 @@ function initNewsletter() {
       return;
     }
     msg.style.color = "var(--brand)";
-    msg.textContent = "🎉 Cupom NNV10 a caminho do seu e-mail!";
+    msg.textContent = "🎉 Use o cupom NNV5 e ganhe 5% no Pix!";
     form.reset();
   });
 }
@@ -337,6 +337,13 @@ function initCart() {
   const countEl = document.getElementById("cartCount");
   const checkoutBtn = document.getElementById("checkoutBtn");
   const emptyMsg = document.getElementById("cartEmpty");
+  const couponInput = document.getElementById("couponInput");
+  const couponBtn = document.getElementById("couponBtn");
+  const couponMsg = document.getElementById("couponMsg");
+  const discountRow = document.getElementById("cartDiscountRow");
+  const discountEl = document.getElementById("cartDiscount");
+  let discountRate = 0;
+  let couponCode = "";
 
   const money = (n) =>
     "R$ " + n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -401,8 +408,32 @@ function initCart() {
         )
         .join("");
     }
-    totalEl.textContent = money(total());
+    const sub = total();
+    const desc = sub * discountRate;
+    if (discountRate > 0 && cart.length) {
+      discountRow.hidden = false;
+      discountEl.textContent = "- " + money(desc);
+    } else {
+      discountRow.hidden = true;
+    }
+    totalEl.textContent = money(sub - desc);
   }
+
+  couponBtn.addEventListener("click", () => {
+    const code = couponInput.value.trim().toUpperCase();
+    if (code === "NNV5") {
+      discountRate = 0.05;
+      couponCode = "NNV5";
+      couponMsg.style.color = "var(--brand)";
+      couponMsg.textContent = "✅ Cupom NNV5 aplicado — 5% no Pix.";
+    } else {
+      discountRate = 0;
+      couponCode = "";
+      couponMsg.style.color = "var(--accent)";
+      couponMsg.textContent = code ? "Cupom inválido. Use NNV5." : "Digite um cupom.";
+    }
+    render();
+  });
 
   const grid = document.getElementById("collectionGrid");
   grid.addEventListener("click", (e) => {
@@ -454,7 +485,11 @@ function initCart() {
       const det = [i.color, i.size ? "Tam " + i.size : ""].filter(Boolean).join(", ");
       text += `• ${i.qty}x ${i.name}${det ? ` (${det})` : ""} — ${money(i.price * i.qty)}\n`;
     });
-    text += `\nTotal: ${money(total())}\nForma de pagamento: ${payLabel}`;
+    const sub = total();
+    const desc = sub * discountRate;
+    text += `\nSubtotal: ${money(sub)}`;
+    if (discountRate > 0) text += `\nCupom ${couponCode}: - ${money(desc)}`;
+    text += `\nTotal: ${money(sub - desc)}\nForma de pagamento: ${payLabel}`;
     window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, "_blank");
   });
 

@@ -13,7 +13,7 @@
 <body>
   <!-- Barra de anúncio -->
   <div class="topbar">
-    <p>Frete grátis acima de R$ 199 · Use <strong>NNV10</strong> e ganhe 10% na primeira compra</p>
+    <p>Frete grátis acima de R$ 199 · Use <strong>NNV5</strong> e ganhe 5% no Pix</p>
   </div>
 
   <!-- Cabeçalho -->
@@ -191,8 +191,8 @@
     <section class="newsletter" id="newsletter">
       <div class="container newsletter__inner">
         <div class="newsletter__text">
-          <h2>Ganhe 10% no primeiro pedido</h2>
-          <p>Cadastre-se e receba lançamentos, promoções exclusivas e dicas de treino.</p>
+          <h2>Ganhe 5% no Pix</h2>
+          <p>Use o cupom <strong>NNV5</strong> e ganhe 5% pagando no Pix. Cadastre-se e receba lançamentos e promoções.</p>
         </div>
         <form class="newsletter__form" id="newsletterForm" novalidate>
           <input type="email" id="emailInput" placeholder="Seu melhor e-mail" aria-label="E-mail" required />
@@ -244,8 +244,17 @@
         <label class="cart__pay-opt"><input type="radio" name="pay" value="Pix" /> <span>Pix</span></label>
         <label class="cart__pay-opt"><input type="radio" name="pay" value="Dinheiro" /> <span>Dinheiro</span></label>
       </div>
+      <div class="cart__coupon">
+        <h4>Cupom de desconto <small>(5% no Pix)</small></h4>
+        <div class="cart__coupon-row">
+          <input type="text" id="couponInput" placeholder="Digite: NNV5" aria-label="Cupom" />
+          <button type="button" id="couponBtn">Aplicar</button>
+        </div>
+        <p class="cart__coupon-msg" id="couponMsg" role="status"></p>
+      </div>
     </div>
     <div class="cart__foot">
+      <div class="cart__discount" id="cartDiscountRow" hidden><span id="cartDiscountLabel">Desconto</span><span id="cartDiscount">- R$ 0</span></div>
       <div class="cart__total"><span>Total</span><strong id="cartTotal">R$ 0</strong></div>
       <button class="btn btn--primary cart__checkout" id="checkoutBtn" disabled>Finalizar pedido no WhatsApp</button>
       <p class="cart__note">Você será direcionada ao WhatsApp <strong>41 9558-5452</strong> para confirmar o pedido e o pagamento.</p>
