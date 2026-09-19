@@ -187,11 +187,23 @@ function renderCollections(filter = "Todas") {
   grid.innerHTML = list
     .map((p) => {
       const initialSizes = sizesOf(p, p.colors[0]);
+      const imgs = p.images && p.images.length ? p.images : [p.img, p.alt].filter(Boolean);
       return `
     <article class="card reveal${p.soldOut ? " card--out" : ""}" data-name="${p.name}" data-price="${p.priceNum}" data-code="${p.code}">
       <div class="card__img">
-        <img class="card__photo" src="${p.img}" alt="${p.name}" loading="lazy" />
-        ${p.alt ? `<img class="card__photo card__photo--alt" src="${p.alt}" alt="${p.name} — costas" loading="lazy" />` : ""}
+        ${imgs
+          .map(
+            (src, i) =>
+              `<img class="card__photo${i === 0 ? " is-active" : ""}" src="${src}" alt="${p.name}" loading="lazy" />`
+          )
+          .join("")}
+        ${
+          imgs.length > 1
+            ? `<button class="card__imgnav card__imgnav--prev" data-dir="-1" type="button" aria-label="Foto anterior">&#8249;</button>
+        <button class="card__imgnav card__imgnav--next" data-dir="1" type="button" aria-label="Próxima foto">&#8250;</button>
+        <div class="card__imgdots">${imgs.map((_, i) => `<span class="card__imgdot${i === 0 ? " is-active" : ""}" data-i="${i}"></span>`).join("")}</div>`
+            : ""
+        }
         ${p.soldOut ? `<span class="card__tag card__tag--out">Esgotado</span>` : `<span class="card__tag">${p.tag}</span>`}
         ${p.lookSuggestion ? `<span class="card__look">Sugestão de look</span>` : ""}
       </div>
@@ -513,12 +525,33 @@ function initLightbox() {
     box.classList.remove("is-open");
     document.body.style.overflow = "";
   }
+  function slide(card, dir, toIndex) {
+    const photos = Array.from(card.querySelectorAll(".card__photo"));
+    const dots = Array.from(card.querySelectorAll(".card__imgdot"));
+    const cur = photos.findIndex((ph) => ph.classList.contains("is-active"));
+    const next =
+      toIndex != null ? toIndex : (cur + dir + photos.length) % photos.length;
+    photos.forEach((ph, i) => ph.classList.toggle("is-active", i === next));
+    dots.forEach((d, i) => d.classList.toggle("is-active", i === next));
+  }
+
   grid.addEventListener("click", (e) => {
+    // navegação do slideshow
+    const nav = e.target.closest(".card__imgnav");
+    if (nav) {
+      slide(nav.closest(".card"), Number(nav.dataset.dir));
+      return;
+    }
+    const dot = e.target.closest(".card__imgdot");
+    if (dot) {
+      slide(dot.closest(".card"), 0, Number(dot.dataset.i));
+      return;
+    }
+    // zoom da foto ativa
     const photo = e.target.closest(".card__photo");
     if (!photo) return;
-    // usa a foto principal do card (primeira)
-    const main = photo.closest(".card__img").querySelector(".card__photo");
-    open(main.src, main.alt);
+    const active = photo.closest(".card__img").querySelector(".card__photo.is-active") || photo;
+    open(active.src, active.alt);
   });
   closeBtn.addEventListener("click", close);
   box.addEventListener("click", (e) => {
