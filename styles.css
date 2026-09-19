@@ -464,7 +464,8 @@ a { color: inherit; text-decoration: none; }
 .card__body { padding: 22px; }
 .card__cat { color: var(--brand); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
 .card__name { font-family: var(--display); font-size: 1.25rem; font-weight: 600; margin: 6px 0 4px; color: var(--ink); }
-.card__code { display: block; color: var(--muted); font-size: 0.75rem; letter-spacing: 0.04em; margin-bottom: 14px; }
+.card__code { display: block; color: var(--muted); font-size: 0.75rem; letter-spacing: 0.04em; margin-bottom: 8px; }
+.card__note { display: block; color: var(--brand); font-size: 0.78rem; font-weight: 500; margin-bottom: 12px; }
 
 /* Cores (swatches) */
 .card__colors { display: flex; gap: 8px; margin-bottom: 14px; }

@@ -36,22 +36,6 @@ const collections = [
   {
     tag: "Novo",
     cat: "Conjuntos",
-    name: "Conjunto Active Marinho",
-    code: "NNV-CJ-003",
-    price: "R$ 279",
-    priceNum: 279,
-    old: null,
-    img: "prod-marinho-front.jpg",
-    alt: "prod-marinho-back.jpg",
-    colors: [
-      { name: "Marinho", hex: "#1b2440" },
-      { name: "Preto", hex: "#141414" },
-    ],
-    sizes: SIZES,
-  },
-  {
-    tag: "Novo",
-    cat: "Conjuntos",
     name: "Conjunto Move Cinza",
     code: "NNV-CJ-004",
     price: "R$ 259",
@@ -125,15 +109,16 @@ const collections = [
   {
     tag: "Novo",
     cat: "Leggings",
-    name: "Legging",
+    name: "Legging Azul Marinho",
     code: "NNV-LEG-009",
     price: "R$ 49,90",
     priceNum: 49.9,
     old: null,
-    img: "prod-legging.jpg",
+    img: "prod-legging-marinho.jpg",
+    note: "Só a legging · não acompanha a parte de cima.",
     colors: [
+      { name: "Azul marinho", hex: "#1b2440", sizes: ["G"] },
       { name: "Preto", hex: "#141414", sizes: ["G"] },
-      { name: "Azul", hex: "#2f6fb0", sizes: ["G"] },
     ],
   },
   {
@@ -201,6 +186,7 @@ function renderCollections(filter = "Todas") {
         <span class="card__cat">${p.cat}</span>
         <h3 class="card__name">${p.name}</h3>
         <span class="card__code">Cód. ${p.code}</span>
+        ${p.note ? `<span class="card__note">${p.note}</span>` : ""}
         <div class="card__colors" role="group" aria-label="Cores disponíveis">
           ${p.colors
             .map(
