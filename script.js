@@ -79,6 +79,18 @@ const collections = [
     ],
     sizes: SIZES,
   },
+  {
+    tag: "Novo",
+    cat: "Baby Look",
+    name: "Baby Look",
+    code: "NNV-BBY-006",
+    price: "R$ 35,00",
+    priceNum: 35,
+    old: null,
+    img: "prod-baby-look.jpg",
+    colors: [{ name: "Preto", hex: "#141414" }],
+    sizes: ["M"],
+  },
 ];
 
 const reviews = [
