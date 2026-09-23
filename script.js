@@ -12,7 +12,13 @@ const collections = [
     priceNum: 69.9,
     old: null,
     img: "prod-macaquinho.jpg",
-    alt: "prod-macaquinho-back.jpg",
+    images: [
+      "prod-macaquinho.jpg",
+      "prod-macaquinho-back.jpg",
+      "prod-mac-preto.jpg",
+      "prod-mac-azul.jpg",
+      "prod-mac-stack.jpg",
+    ],
     colors: [
       { name: "Vermelho", hex: "#a5121b", sizes: ["G"] },
       { name: "Azul", hex: "#2f6fb0", sizes: ["P"] },
@@ -98,6 +104,12 @@ const collections = [
     priceNum: 49.9,
     old: null,
     img: "prod-shorts.jpg",
+    images: [
+      "prod-shorts.jpg",
+      "prod-short-azul.jpg",
+      "prod-short-marrom.jpg",
+      "prod-short-roxo.jpg",
+    ],
     colors: [
       { name: "Preto", hex: "#141414", sizes: ["P", "M"] },
       { name: "Marrom", hex: "#5b3a29", sizes: ["P", "M"] },
@@ -154,6 +166,7 @@ const collections = [
     priceNum: 76.9,
     old: null,
     img: "prod-conjunto-marrom.jpg",
+    images: ["prod-conjunto-marrom.jpg", "prod-conjunto-marrom-flat.jpg"],
     colors: [{ name: "Marrom", hex: "#8a6b52" }],
     sizes: ["Único"],
   },
@@ -213,7 +226,6 @@ function cardHTML(p) {
         ${p.lookSuggestion ? `<span class="card__look">Sugestão de look</span>` : ""}
       </div>
       <div class="card__body">
-        <span class="card__cat">${p.cat}</span>
         <h3 class="card__name">${p.name}</h3>
         <span class="card__code">Cód. ${p.code}</span>
         ${p.note ? `<span class="card__note">${p.note}</span>` : ""}
