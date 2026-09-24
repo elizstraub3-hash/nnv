@@ -46,20 +46,30 @@ $("#loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = $("#loginBtn");
   const msg = $("#loginMsg");
+  msg.className = "msg msg--err";
   msg.textContent = "";
   btn.disabled = true;
   btn.textContent = "Entrando...";
-  const { error } = await window.sb.auth.signInWithPassword({ email: ADMIN_EMAIL, password: $("#pw").value });
-  btn.disabled = false;
-  btn.textContent = "Entrar";
-  if (error) {
-    const m = (error.message || "").toLowerCase();
-    if (m.includes("not confirmed")) msg.textContent = "E-mail não confirmado. No Supabase, confirme o usuário admin@neneve.app.";
-    else if (m.includes("invalid")) msg.textContent = "Senha incorreta. Digite exatamente: neneve";
-    else msg.textContent = "Erro: " + (error.message || "desconhecido");
-    return;
+  try {
+    if (!window.sb) throw new Error("Banco não conectou (recarregue com Ctrl+Shift+R).");
+    const req = window.sb.auth.signInWithPassword({ email: ADMIN_EMAIL, password: $("#pw").value });
+    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error("Tempo esgotado. Verifique sua internet e tente de novo.")), 15000));
+    const { error } = await Promise.race([req, timeout]);
+    if (error) {
+      const m = (error.message || "").toLowerCase();
+      if (m.includes("not confirmed")) throw new Error("E-mail não confirmado no Supabase.");
+      if (m.includes("invalid")) throw new Error("Senha incorreta (digite: neneve) ou usuário não existe.");
+      if (m.includes("api key") || m.includes("apikey")) throw new Error("Chave do banco inválida. Me avise para corrigir.");
+      throw new Error(error.message || "Erro desconhecido");
+    }
+    showPanel();
+  } catch (err) {
+    console.error("Login:", err);
+    msg.textContent = err.message || String(err);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Entrar";
   }
-  showPanel();
 });
 
 $("#logoutBtn").addEventListener("click", async () => {
