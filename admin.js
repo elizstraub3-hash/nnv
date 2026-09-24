@@ -53,7 +53,10 @@ $("#loginForm").addEventListener("submit", async (e) => {
   btn.disabled = false;
   btn.textContent = "Entrar";
   if (error) {
-    msg.textContent = "Senha incorreta ou usuário não configurado.";
+    const m = (error.message || "").toLowerCase();
+    if (m.includes("not confirmed")) msg.textContent = "E-mail não confirmado. No Supabase, confirme o usuário admin@neneve.app.";
+    else if (m.includes("invalid")) msg.textContent = "Senha incorreta. Digite exatamente: neneve";
+    else msg.textContent = "Erro: " + (error.message || "desconhecido");
     return;
   }
   showPanel();
