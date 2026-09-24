@@ -2,7 +2,7 @@
 const WHATSAPP = "554195585452"; // 41 9558-5452 (com código do país 55)
 
 const SIZES = ["PP", "P", "M", "G", "GG"];
-const collections = [
+let collections = [
   {
     tag: "Novo",
     cat: "Macaquinhos",
@@ -190,6 +190,45 @@ const reviews = [
   { text: "Qualidade de marca gringa com preço justo e entrega rápida. Virei cliente fiel.", name: "Carla M.", role: "Yoga · Belo Horizonte", initials: "CM" },
 ];
 
+// ===== Banco de dados (Supabase) =====
+const brl = (n) =>
+  "R$ " + Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+function mapRow(r) {
+  const imgs = Array.isArray(r.imagens) ? r.imagens.filter(Boolean) : [];
+  return {
+    tag: r.tag || "Novo",
+    cat: r.categoria || "Outros",
+    name: r.nome || "",
+    code: r.codigo || "",
+    price: r.preco ? brl(r.preco) : "",
+    priceNum: Number(r.preco) || 0,
+    old: r.preco_antigo ? brl(r.preco_antigo) : null,
+    img: imgs[0] || "",
+    images: imgs,
+    colors: Array.isArray(r.cores) ? r.cores : [],
+    sizes: Array.isArray(r.tamanhos) && r.tamanhos.length ? r.tamanhos : SIZES,
+    soldOut: !!r.esgotado,
+    lookSuggestion: !!r.sugestao_look,
+    note: r.nota || "",
+  };
+}
+
+async function loadProducts() {
+  try {
+    if (!window.sb) return;
+    const { data, error } = await window.sb
+      .from("produtos")
+      .select("*")
+      .order("ordem", { ascending: true })
+      .order("criado_em", { ascending: true });
+    if (error || !data || !data.length) return; // mantém os produtos padrão
+    collections = data.map(mapRow);
+  } catch (e) {
+    /* mantém os produtos padrão */
+  }
+}
+
 // ===== Render =====
 const CAT_ORDER = [
   "Macaquinhos",
@@ -201,10 +240,10 @@ const CAT_ORDER = [
   "Sugestões de looks",
   "Acessórios",
 ];
-const sizesOf = (p, c) => (c.sizes && c.sizes.length ? c.sizes : p.sizes || SIZES);
+const sizesOf = (p, c) => (c && c.sizes && c.sizes.length ? c.sizes : p.sizes || SIZES);
 
 function cardHTML(p) {
-  const initialSizes = sizesOf(p, p.colors[0]);
+  const initialSizes = sizesOf(p, p.colors[0] || {});
   const imgs = p.images && p.images.length ? p.images : [p.img, p.alt].filter(Boolean);
   return `
     <article class="card reveal${p.soldOut ? " card--out" : ""}" data-name="${p.name}" data-price="${p.priceNum}" data-code="${p.code}">
@@ -263,10 +302,11 @@ function cardHTML(p) {
 
 function renderCollections(filter = "Todas") {
   const wrap = document.getElementById("collectionGrid");
+  const allCats = [...CAT_ORDER, ...collections.map((p) => p.cat)].filter(
+    (c, i, a) => a.indexOf(c) === i
+  );
   const cats =
-    filter === "Todas"
-      ? CAT_ORDER.filter((c) => collections.some((p) => p.cat === c))
-      : [filter];
+    filter === "Todas" ? allCats.filter((c) => collections.some((p) => p.cat === c)) : [filter];
   wrap.innerHTML = cats
     .map((cat) => {
       const items = collections.filter((p) => p.cat === cat);
@@ -674,7 +714,8 @@ function initCategoryFilter() {
 }
 
 // ===== Init =====
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadProducts(); // busca do banco (Supabase) com fallback nos produtos padrão
   renderCollections();
   renderReviews();
   initCategoryFilter();
