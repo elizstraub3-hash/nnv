@@ -92,21 +92,50 @@ async function loadAll() {
   }));
   $("#seedHint").hidden = STATE.length > 0;
   render();
+  renderStats();
+}
+
+// ---------- Estatísticas ----------
+function renderStats() {
+  const total = STATE.length;
+  const out = STATE.filter((r) => r.esgotado).length;
+  const cats = new Set(STATE.map((r) => r.categoria).filter(Boolean)).size;
+  const looks = STATE.filter((r) => r.sugestao_look).length;
+  const box = $("#stats");
+  if (!box) return;
+  box.innerHTML =
+    `<div class="stat"><b>${total}</b><span>Produtos</span></div>` +
+    `<div class="stat stat--out"><b>${out}</b><span>Esgotados</span></div>` +
+    `<div class="stat"><b>${cats}</b><span>Categorias</span></div>` +
+    `<div class="stat"><b>${looks}</b><span>Sugestões de look</span></div>`;
 }
 
 // ---------- Render ----------
+let SEARCH = "";
 function catList() {
   return [...new Set([...CAT_ORDER, ...STATE.map((r) => r.categoria)])].filter(Boolean);
 }
 
 function render() {
   const cats = catList().map((c) => `<option value="${esc(c)}">`).join("");
+  const q = SEARCH.trim().toLowerCase();
+  const visible = STATE.map((r, i) => [r, i]).filter(
+    ([r]) => !q || (r.nome || "").toLowerCase().includes(q) || (r.categoria || "").toLowerCase().includes(q) || (r.codigo || "").toLowerCase().includes(q)
+  );
   listEl.innerHTML =
     `<datalist id="catlist">${cats}</datalist>` +
-    STATE.map((r, i) => productCard(r, i)).join("");
+    (STATE.length === 0
+      ? ""
+      : visible.length === 0
+      ? `<div class="empty">Nenhum produto encontrado para "${esc(SEARCH)}".</div>`
+      : visible.map(([r, i]) => productCard(r, i)).join(""));
 }
 
 function productCard(r, i) {
+  const thumb = r.imagens && r.imagens[0]
+    ? `<img class="thumb" src="${esc(r.imagens[0])}" alt="">`
+    : `<div class="thumb thumb--empty">📷</div>`;
+  const price = r.preco ? "R$ " + Number(r.preco).toFixed(2).replace(".", ",") : "—";
   const imgs = r.imagens
     .map((src, k) => `<figure><img src="${esc(src)}" alt=""><button type="button" title="Remover" onclick="rmImg(${i},${k})">&times;</button></figure>`)
     .join("");
@@ -124,12 +153,16 @@ function productCard(r, i) {
   return `
   <div class="prod ${isNew ? "open" : ""}" data-idx="${i}">
     <div class="prod__head" onclick="if(!event.target.closest('button'))this.parentElement.classList.toggle('open')">
-      <span class="prod__title">${esc(r.nome) || "(novo produto)"}
-        ${r.esgotado ? '<span class="pill pill--out">Esgotado</span>' : ""}
-        ${r.sugestao_look ? '<span class="pill">Sugestão de look</span>' : ""}
-        <span class="pill">${esc(r.categoria) || "—"}</span>
-      </span>
-      <span style="color:var(--muted);font-size:.85rem">${r.preco ? "R$ " + Number(r.preco).toFixed(2).replace(".", ",") : "—"}</span>
+      ${thumb}
+      <div class="prod__info">
+        <div class="prod__name">${esc(r.nome) || "(novo produto)"}
+          ${r.esgotado ? '<span class="pill pill--out">Esgotado</span>' : ""}
+          ${r.sugestao_look ? '<span class="pill pill--look">Sugestão de look</span>' : ""}
+        </div>
+        <div class="prod__sub">${esc(r.categoria) || "sem categoria"}${r.codigo ? " · " + esc(r.codigo) : ""}</div>
+      </div>
+      <span class="prod__price">${price}</span>
+      <span class="chev">▾</span>
     </div>
     <div class="prod__body">
       <div class="row">
@@ -228,11 +261,20 @@ window.upImgs = async (i, files) => {
 
 $("#addBtn").addEventListener("click", () => {
   syncAll();
+  SEARCH = "";
+  $("#search").value = "";
   const maxOrd = STATE.reduce((m, r) => Math.max(m, r.ordem || 0), 0);
   STATE.unshift({ ordem: maxOrd + 1, categoria: "", nome: "", codigo: "", preco: null, preco_antigo: null, tag: "Novo", esgotado: false, sugestao_look: false, nota: "", cores: [{ name: "Preto", hex: "#141414" }], tamanhos: ["PP", "P", "M", "G", "GG"], imagens: [] });
   $("#seedHint").hidden = true;
   render();
+  renderStats();
   window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+$("#search").addEventListener("input", (e) => {
+  syncAll();
+  SEARCH = e.target.value;
+  render();
 });
 
 $("#seedBtn").addEventListener("click", async () => {
@@ -262,6 +304,8 @@ window.save = async (i) => {
       STATE[i].id = data.id;
     }
     toast("Salvo! ✅");
+    render();
+    renderStats();
   } catch (e) {
     toast("Erro ao salvar: " + (e.message || e));
   }
@@ -277,6 +321,7 @@ window.del = async (i) => {
     }
     STATE.splice(i, 1);
     render();
+    renderStats();
     $("#seedHint").hidden = STATE.length > 0;
     toast("Excluído.");
   } catch (e) {
