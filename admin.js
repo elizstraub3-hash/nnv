@@ -78,6 +78,11 @@ $("#logoutBtn").addEventListener("click", async () => {
 });
 
 // ---------- Carregar produtos ----------
+async function doImport() {
+  if (!window.SEED) return { error: { message: "Sem produtos para importar." } };
+  return await window.sb.from("produtos").insert(window.SEED.map((r) => ({ ...r })));
+}
+
 async function loadAll() {
   const { data, error } = await window.sb.from("produtos").select("*").order("ordem", { ascending: true }).order("criado_em", { ascending: true });
   if (error) {
@@ -90,6 +95,24 @@ async function loadAll() {
     tamanhos: Array.isArray(r.tamanhos) ? r.tamanhos : [],
     imagens: Array.isArray(r.imagens) ? r.imagens : [],
   }));
+
+  // Primeira vez com o banco vazio: importa os produtos do site automaticamente.
+  let autoSeeded = false;
+  try { autoSeeded = localStorage.getItem("nnv_seeded") === "1"; } catch (e) {}
+  if (STATE.length === 0 && window.SEED && !autoSeeded) {
+    $("#seedHint").hidden = true;
+    listEl.innerHTML = `<div class="hint">Importando os produtos do site… aguarde alguns segundos.</div>`;
+    const { error: impErr } = await doImport();
+    if (!impErr) {
+      try { localStorage.setItem("nnv_seeded", "1"); } catch (e) {}
+      toast("Produtos importados! ✅");
+      return loadAll(); // recarrega já com os produtos
+    }
+    // Se falhar, mostra o botão manual para tentar de novo
+    listEl.innerHTML = "";
+    toast("Não consegui importar sozinho: " + (impErr.message || impErr));
+  }
+
   $("#seedHint").hidden = STATE.length > 0;
   render();
   renderStats();
@@ -280,9 +303,10 @@ $("#search").addEventListener("input", (e) => {
 $("#seedBtn").addEventListener("click", async () => {
   if (!window.SEED) return;
   $("#seedBtn").disabled = true;
-  const { error } = await window.sb.from("produtos").insert(window.SEED.map((r) => ({ ...r })));
+  const { error } = await doImport();
   $("#seedBtn").disabled = false;
   if (error) return toast("Erro ao importar: " + error.message);
+  try { localStorage.setItem("nnv_seeded", "1"); } catch (e) {}
   toast("Produtos importados! ✅");
   loadAll();
 });
